@@ -27,6 +27,6 @@ https://zhuanlan.zhihu.com/p/673552320
 ------------------------------
 
 未来
-- [ ] 解析文档、pdf
+- [ ] 解析文档、pdf（llamaindex？pdfminer？）
 - [ ] 解析图片、表格
 - [ ] 召回图片、表格
