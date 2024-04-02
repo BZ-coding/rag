@@ -11,6 +11,8 @@ https://zhuanlan.zhihu.com/p/673552320
 
 https://www.langchain.com.cn/getting_started/getting_started
 
+https://llama-index.readthedocs.io/zh/latest/use_cases/queries.html
+
 * 收集文献
     - [ ] 法律条款
     - [ ] 菜谱
