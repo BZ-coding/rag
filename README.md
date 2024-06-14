@@ -21,6 +21,7 @@ https://llama-index.readthedocs.io/zh/latest/use_cases/queries.html
     - [ ] 使用nvidia的docker
     - [ ] llama有em模型吗？
     - [ ] 处理文本，分段存储
+    - [ ] 语义分割 <https://blog.csdn.net/v_JULY_v/article/details/135386202>
     - [ ] 向量化，存入向量数据库
     - [ ] 构造prompt模板，搭建推理服务
     - [ ] 部署在微信公众号或网页上
