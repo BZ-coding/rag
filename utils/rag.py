@@ -18,17 +18,17 @@ class Rag:
             tokenizer=tokenizer,
             max_length=4096,
             truncation=True,
-            temperature=0.6,
-            top_p=0.95,
             repetition_penalty=1.2,
             do_sample=True,
+            temperature=0.6,
+            top_p=0.95,
         )
-        local_llm = HuggingFacePipeline(pipeline=pipe)
+        self.local_llm = HuggingFacePipeline(pipeline=pipe)
         prompt = ChatPromptTemplate.from_template(template)
         self.rag_chain = (
                 {"context": retriever, "question": RunnablePassthrough()}
                 | prompt
-                | local_llm
+                | self.local_llm
                 | StrOutputParser()
         )
 
