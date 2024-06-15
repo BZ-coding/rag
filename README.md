@@ -14,16 +14,17 @@ https://www.langchain.com.cn/getting_started/getting_started
 https://llama-index.readthedocs.io/zh/latest/use_cases/queries.html
 
 * 收集文献
-    - [ ] 法律条款
+    - [x] 法律条款
     - [ ] 菜谱
     - [ ] 小说（例如哈利波特等）
 * 搭建服务
-    - [ ] 使用nvidia的docker
-    - [ ] llama有em模型吗？
-    - [ ] 处理文本，分段存储
+    - [x] 使用nvidia的docker
+    - [x] llama有em模型吗？
+    - [x] 处理文本，分段存储
     - [ ] 语义分割 <https://blog.csdn.net/v_JULY_v/article/details/135386202>
-    - [ ] 向量化，存入向量数据库
-    - [ ] 构造prompt模板，搭建推理服务
+    - [x] 向量化，存入向量数据库
+    - [ ] ranker
+    - [x] 构造prompt模板，搭建推理服务
     - [ ] 部署在微信公众号或网页上
 * 微调
     - [ ] 用LoRA微调专门的法律或小说插件

@@ -1,2 +1,6 @@
 .idea/
 .ipynb_checkpoints/
+*.pkl
+*.html
+*.faiss
+*.pyc
