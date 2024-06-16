@@ -4,7 +4,7 @@ docker exec -it gpu_env bash
 """
 
 import torch
-from transformers import LlamaTokenizer, LlamaForCausalLM
+from transformers import LlamaTokenizer, LlamaForCausalLM, PreTrainedTokenizerFast
 
 from utils.embeddings import get_embedding_model, get_text_embedding_pairs
 from utils.vectorstores import FaissVectorStore
@@ -14,7 +14,8 @@ from utils.rag import Rag
 EMBEDDING_MODEL_PATH = "/mnt/nfs/zsd_server/models/huggingface/embedding_models/BAAI/bge-large-zh-v1.5/"
 TEXT_EMBEDDING_PAIRS_PATH = 'text_embedding_pairs_BAAI_1.pkl'
 RERANKER_MODEL_PATH = "/mnt/nfs/zsd_server/models/huggingface/reranker_models/BAAI/bge-reranker-large/"
-CHAT_MODEL_PATH = "/mnt/nfs/zsd_server/models/huggingface/chinese-alpaca-2-7b/"
+# CHAT_MODEL_PATH = "/mnt/nfs/zsd_server/models/huggingface/chinese-alpaca-2-7b/"
+CHAT_MODEL_PATH = "/mnt/nfs/zsd_server/models/huggingface/llama-3-chinese-8b-instruct-v3/"
 
 if __name__ == '__main__':
     with open("刑法.txt", "r") as f:
@@ -38,7 +39,7 @@ if __name__ == '__main__':
         device_map='auto',
         torch_dtype=torch.bfloat16,
     )
-    tokenizer = LlamaTokenizer.from_pretrained(CHAT_MODEL_PATH)
+    tokenizer = PreTrainedTokenizerFast.from_pretrained(CHAT_MODEL_PATH)
 
     rag = Rag(chat_model=chat_model, tokenizer=tokenizer, retriever=vectorstore.retriever)
 
