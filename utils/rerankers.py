@@ -1,6 +1,7 @@
 # https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/reranker/README.md
 from FlagEmbedding import FlagReranker
 from langchain_core.documents import Document
+from langchain_core.runnables import RunnableLambda
 
 
 class Reranker:
@@ -34,3 +35,6 @@ class Reranker:
         sim_docs = self.retriever.invoke(input, config, **kwargs)
         sorted_answers = self.rank(query=input, answers=sim_docs)
         return sorted_answers
+
+    def as_retriever(self):
+        return RunnableLambda(self.invoke)

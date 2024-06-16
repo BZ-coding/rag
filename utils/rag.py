@@ -2,7 +2,7 @@ from langchain.prompts import ChatPromptTemplate
 from langchain_huggingface.llms import HuggingFacePipeline
 from langchain.schema.runnable import RunnablePassthrough
 from langchain.schema.output_parser import StrOutputParser
-from transformers import LlamaTokenizer, LlamaForCausalLM, GenerationConfig, pipeline
+from transformers import pipeline
 
 
 class Rag:
