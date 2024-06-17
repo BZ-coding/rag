@@ -58,6 +58,6 @@ https://llama-index.readthedocs.io/zh/latest/use_cases/queries.html
 ------------------------------
 
 未来
-- [ ] 解析文档、pdf（llamaindex？pdfminer？）
+- [ ] 解析文档、pdf（llamaindex？pdfminer？RapidOCR？）
 - [ ] 解析图片、表格
 - [ ] 召回图片、表格
