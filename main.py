@@ -4,7 +4,7 @@ docker exec -it gpu_env bash
 """
 
 import torch
-from transformers import LlamaTokenizer, LlamaForCausalLM, PreTrainedTokenizerFast
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from utils.embeddings import get_embedding_model, get_text_embedding_pairs
 from utils.vectorstores import FaissVectorStore
@@ -33,18 +33,18 @@ if __name__ == '__main__':
     vectorstore = FaissVectorStore(text_embedding_pairs=text_embedding_pairs, embedding_model=embedding_model,
                                    search_kwargs={"k": 3})
 
-    chat_model = LlamaForCausalLM.from_pretrained(
+    chat_model = AutoModelForCausalLM.from_pretrained(
         CHAT_MODEL_PATH,
         # load_in_8bit=True,
         device_map='auto',
         torch_dtype=torch.bfloat16,
     )
-    tokenizer = PreTrainedTokenizerFast.from_pretrained(CHAT_MODEL_PATH)
+    tokenizer = AutoTokenizer.from_pretrained(CHAT_MODEL_PATH)
 
     rag = Rag(chat_model=chat_model, tokenizer=tokenizer, retriever=vectorstore.retriever)
 
     query = "持有管制刀具怎么判？"
-    print(rag.answer(query=query))
+    rag.answer(query=query)
 
     print("\n\n\n")
     text_embedding_pairs = get_text_embedding_pairs(embedding_model=embedding_model, data=data,
@@ -53,4 +53,4 @@ if __name__ == '__main__':
                                    search_kwargs={"k": 20})
     reranker = Reranker(ranker_model_path=RERANKER_MODEL_PATH, retriever=vectorstore.retriever, topn=3)
     rag = Rag(chat_model=chat_model, tokenizer=tokenizer, retriever=reranker.as_retriever())
-    print(rag.answer(query=query))
+    rag.answer(query=query)

@@ -2,7 +2,7 @@ from langchain.prompts import ChatPromptTemplate
 from langchain_huggingface.llms import HuggingFacePipeline
 from langchain.schema.runnable import RunnablePassthrough
 from langchain.schema.output_parser import StrOutputParser
-from transformers import pipeline
+from transformers import pipeline, TextStreamer
 
 # TEMPLATE = """你是问答任务助手。使用以下检索到的上下文片段来回答问题。如果你不知道答案，就说你不知道。最多使用三个句子，保持答案简洁。
 # Question: {question}
@@ -20,6 +20,7 @@ Context: {context}<|eot_id|>
 
 class Rag:
     def __init__(self, chat_model, tokenizer, retriever):
+        streamer = TextStreamer(tokenizer)
         pipe = pipeline(
             "text-generation",
             model=chat_model,
@@ -30,6 +31,7 @@ class Rag:
             do_sample=True,
             temperature=0.6,
             top_p=0.95,
+            streamer=streamer,
         )
         self.local_llm = HuggingFacePipeline(pipeline=pipe)
         prompt = ChatPromptTemplate.from_template(TEMPLATE)
