@@ -49,6 +49,7 @@ https://llama-index.readthedocs.io/zh/latest/use_cases/queries.html
     - [ ] 语义分割 <https://blog.csdn.net/v_JULY_v/article/details/135386202> （nlp_bert_document-segmentation_chinese-base）
     - [x] 向量化，存入向量数据库
     - [x] ranker
+    - [ ] 增加bm25检索，用于多路召回。（加去重）
     - [x] 构造prompt模板，搭建推理服务
     - [ ] 部署在微信公众号或网页上
 * 微调
