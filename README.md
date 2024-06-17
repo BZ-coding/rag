@@ -46,7 +46,7 @@ https://llama-index.readthedocs.io/zh/latest/use_cases/queries.html
     - [x] 使用nvidia的docker
     - [x] llama有em模型吗？
     - [x] 处理文本，分段存储
-    - [ ] 语义分割 <https://blog.csdn.net/v_JULY_v/article/details/135386202>
+    - [ ] 语义分割 <https://blog.csdn.net/v_JULY_v/article/details/135386202> （nlp_bert_document-segmentation_chinese-base）
     - [x] 向量化，存入向量数据库
     - [x] ranker
     - [x] 构造prompt模板，搭建推理服务
