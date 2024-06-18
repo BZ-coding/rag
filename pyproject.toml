@@ -1,0 +1,63 @@
+[project]
+name = "rag"
+version = "0.1"
+description = ""
+readme = "README.md"
+authors = [
+    { name = "zhangsheng377", email = "435878393@qq.com" },
+]
+dependencies = [
+    "langchain_community",
+    "transformers",
+    "FlagEmbedding",
+    "torch",
+]
+requires-python = ">= 3.10"
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov",
+]
+
+lint = [
+    "black",
+    "ruff",
+]
+
+[project.urls]
+Homepage = "https://github.com/BZ-coding/rag"
+Repository = "https://github.com/BZ-coding/rag"
+
+[tool.black]
+line-length = 119
+target-version = ['py310']
+
+[tool.ruff]
+line-length = 119
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
