@@ -24,6 +24,10 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 
+[project.urls]
+Homepage = "https://github.com/BZ-coding/rag"
+Repository = "https://github.com/BZ-coding/rag"
+
 [project.optional-dependencies]
 test = [
     "pytest",
@@ -34,10 +38,6 @@ lint = [
     "black",
     "ruff",
 ]
-
-[project.urls]
-Homepage = "https://github.com/BZ-coding/rag"
-Repository = "https://github.com/BZ-coding/rag"
 
 [tool.black]
 line-length = 119
