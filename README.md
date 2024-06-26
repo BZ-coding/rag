@@ -44,6 +44,7 @@ https://llama-index.readthedocs.io/zh/latest/use_cases/queries.html
     - [ ] 小说（例如哈利波特等）
 * 搭建服务
     - [x] 使用nvidia的docker
+    - [ ] 部署本地的类openai的api，这样langchain部分可以不用魔改（text-generation-webui？）
     - [x] llama有em模型吗？
     - [x] 处理文本，分段存储
     - [ ] 语义分割 <https://blog.csdn.net/v_JULY_v/article/details/135386202> （nlp_bert_document-segmentation_chinese-base）
