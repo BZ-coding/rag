@@ -43,7 +43,7 @@ if __name__ == '__main__':
         CHAT_MODEL_PATH,
         # load_in_8bit=True,
         device_map='auto',
-        torch_dtype=torch.bfloat16,
+        torch_dtype=torch.float16,  # 推理时用fp16精度更高，训练时要用bf16不容易精度溢出
     )
     tokenizer = AutoTokenizer.from_pretrained(CHAT_MODEL_PATH)
 
