@@ -9,7 +9,8 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from utils.embeddings import get_embedding_model, get_text_embedding_pairs
 from utils.vectorstores import FaissVectorStore
 from utils.rerankers import Reranker
-from utils.rag import Rag
+# from utils.rag import Rag
+from utils.rag import MyRag as Rag
 
 EMBEDDING_MODEL_PATH = "/mnt/nfs/zsd_server/models/huggingface/embedding_models/BAAI/bge-large-zh-v1.5/"
 TEXT_EMBEDDING_PAIRS_PATH = 'text_embedding_pairs_BAAI.pkl'
@@ -26,7 +27,7 @@ def answer(vectorstore, chat_model, tokenizer, query, ranker_model_path=None):
     else:
         retriever = vectorstore.get_retriever(search_kwargs={"k": 3})
     rag = Rag(chat_model=chat_model, tokenizer=tokenizer, retriever=retriever)
-    rag.answer(query=query)
+    return rag.answer(query=query)
 
 
 if __name__ == '__main__':
@@ -48,7 +49,8 @@ if __name__ == '__main__':
     tokenizer = AutoTokenizer.from_pretrained(CHAT_MODEL_PATH)
 
     query = "持有管制刀具怎么判？"
-    answer(vectorstore=vectorstore, chat_model=chat_model, tokenizer=tokenizer, query=query)
+    r=answer(vectorstore=vectorstore, chat_model=chat_model, tokenizer=tokenizer, query=query)
+    print(r)
 
     print("\n\n\n")
     answer(vectorstore=vectorstore, chat_model=chat_model, tokenizer=tokenizer, query=query,
