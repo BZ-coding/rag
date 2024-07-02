@@ -10,8 +10,10 @@ from transformers import pipeline, TextStreamer
 
 
 class Rag:
-    def __init__(self, chat_model, tokenizer, retriever):
-        streamer = TextStreamer(tokenizer)
+    def __init__(self, chat_model, tokenizer, retriever, streaming=True):
+        streamer = None
+        if streaming:
+            streamer = TextStreamer(tokenizer)
         pipe = pipeline(
             "text-generation",
             model=chat_model,
@@ -44,8 +46,10 @@ class Rag:
 
 
 class MyRag:
-    def __init__(self, chat_model, tokenizer, retriever):
-        streamer = TextStreamer(tokenizer)
+    def __init__(self, chat_model, tokenizer, retriever, streaming=True):
+        streamer = None
+        if streaming:
+            streamer = TextStreamer(tokenizer)
         pipe = pipeline(
             "text-generation",
             model=chat_model,
@@ -57,6 +61,7 @@ class MyRag:
             temperature=0.6,
             top_p=0.95,
             streamer=streamer,
+            return_full_text=False,
         )
         self.local_llm = HuggingFacePipeline(pipeline=pipe)
 
@@ -70,8 +75,12 @@ class MyRag:
             input_variables=["context", "question"],
             template=template,
         )
-        fact_extraction_chain = LLMChain(
-            llm=self.local_llm, prompt=fact_template, output_key="facts")
+        fact_extraction_chain = (
+                {"context": retriever, "question": RunnablePassthrough()}
+                | fact_template
+                | self.local_llm
+                | StrOutputParser()
+        )
 
         message = [
             {"role": "system", "content": "You are a helpful assistant. 你是一个乐于助人的助手。"},
@@ -79,21 +88,20 @@ class MyRag:
              "content": "Facts: {facts}\n\n请根据以上事实清单，写一个简短的段落来回答问题：{question}。注意不要脱离事实清单。"},
         ]
         template = tokenizer.apply_chat_template(message, tokenize=False, add_generation_prompt=True)
-        fact_template = PromptTemplate(
+        answer_template = PromptTemplate(
             input_variables=["facts", "question"],
             template=template,
         )
-        answer_chain = LLMChain(
-            llm=self.local_llm, prompt=fact_template, output_key="answer")
 
-        sequential_chain = SequentialChain(
-            chains=[fact_extraction_chain, answer_chain],
-            input_variables=["context", "question"],
-            output_variables=["answer"],
-            verbose=True)
         self.rag_chain = (
-                {"context": retriever, "question": RunnablePassthrough()}
-                | sequential_chain
+                {
+                    "context": retriever,
+                    "question": RunnablePassthrough(),
+                    "facts": fact_extraction_chain,
+                }
+                | answer_template
+                | self.local_llm
+                | StrOutputParser()
         )
 
     def answer(self, query):

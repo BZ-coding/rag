@@ -17,16 +17,17 @@ TEXT_EMBEDDING_PAIRS_PATH = 'text_embedding_pairs_BAAI.pkl'
 RERANKER_MODEL_PATH = "/mnt/nfs/zsd_server/models/huggingface/reranker_models/BAAI/bge-reranker-large/"
 # CHAT_MODEL_PATH = "/mnt/nfs/zsd_server/models/huggingface/chinese-alpaca-2-7b/"
 CHAT_MODEL_PATH = "/mnt/nfs/zsd_server/models/huggingface/llama-3-chinese-8b-instruct-v3/"
+STREAMING = True
 
 
-def answer(vectorstore, chat_model, tokenizer, query, ranker_model_path=None):
+def answer(vectorstore, chat_model, tokenizer, query, ranker_model_path=None, streaming=True):
     if ranker_model_path:
         retriever = vectorstore.get_retriever(search_kwargs={"k": 20})
         reranker = Reranker(ranker_model_path=RERANKER_MODEL_PATH, retriever=retriever, topn=3)
         retriever = reranker.as_retriever()
     else:
         retriever = vectorstore.get_retriever(search_kwargs={"k": 3})
-    rag = Rag(chat_model=chat_model, tokenizer=tokenizer, retriever=retriever)
+    rag = Rag(chat_model=chat_model, tokenizer=tokenizer, retriever=retriever, streaming=streaming)
     return rag.answer(query=query)
 
 
@@ -49,9 +50,13 @@ if __name__ == '__main__':
     tokenizer = AutoTokenizer.from_pretrained(CHAT_MODEL_PATH)
 
     query = "持有管制刀具怎么判？"
-    r=answer(vectorstore=vectorstore, chat_model=chat_model, tokenizer=tokenizer, query=query)
-    print(r)
+    result = answer(vectorstore=vectorstore, chat_model=chat_model, tokenizer=tokenizer, query=query,
+                    streaming=STREAMING)
+    if not STREAMING:
+        print(result)
 
     print("\n\n\n")
-    answer(vectorstore=vectorstore, chat_model=chat_model, tokenizer=tokenizer, query=query,
-           ranker_model_path=RERANKER_MODEL_PATH)
+    result = answer(vectorstore=vectorstore, chat_model=chat_model, tokenizer=tokenizer, query=query,
+                    ranker_model_path=RERANKER_MODEL_PATH, streaming=STREAMING)
+    if not STREAMING:
+        print(result)
