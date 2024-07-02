@@ -51,6 +51,9 @@ https://llama-index.readthedocs.io/zh/latest/use_cases/queries.html
     - [x] 向量化，存入向量数据库
     - [ ] 建图？用图检索？
     - [ ] query改写？让大模型自己改写？
+    - [ ] 召回的文档评估
+              > 1. 让llm自己评估该文档对回答query有没有用？
+              > 2. 让llm对召回的文档，做关于query的总结？
     - [x] ranker
     - [ ] 增加bm25检索，用于多路召回。（加去重）
     - [x] 构造prompt模板，搭建推理服务
