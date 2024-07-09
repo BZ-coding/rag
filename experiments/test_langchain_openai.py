@@ -1,4 +1,4 @@
-from langchain_openai import ChatOpenAI
+from langchain_openai import ChatOpenAI, OpenAI
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
 llm = ChatOpenAI(
@@ -17,5 +17,6 @@ messages = [
 ]
 ai_msg = llm.invoke(messages)
 
-print(ai_msg)
+print(ai_msg, '\n\n')
+print(ai_msg.__dict__, '\n\n')
 print(ai_msg.content)

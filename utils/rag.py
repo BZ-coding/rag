@@ -1,8 +1,15 @@
+import sys
+from typing import Any, Dict, List
+
 from langchain.prompts import ChatPromptTemplate
+from langchain_core.messages import BaseMessage
+from langchain_core.outputs import LLMResult
 from langchain_huggingface.llms import HuggingFacePipeline
 from langchain.schema.runnable import RunnablePassthrough
 from langchain.schema.output_parser import StrOutputParser
 from langchain.prompts import PromptTemplate
+from langchain_openai import ChatOpenAI
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.chains import LLMChain
 from langchain.chains import SequentialChain
 from langchain.chains import SimpleSequentialChain
@@ -25,6 +32,7 @@ class Rag:
             temperature=0.6,
             top_p=0.95,
             streamer=streamer,
+            return_full_text=False,
         )
         self.local_llm = HuggingFacePipeline(pipeline=pipe)
         message = [
@@ -45,25 +53,34 @@ class Rag:
         return self.rag_chain.invoke(query)
 
 
+class MyStreamingStdOutCallbackHandler(StreamingStdOutCallbackHandler):
+    def on_llm_end(self, response: LLMResult, **kwargs: Any) -> None:
+        sys.stdout.write("\n\n")
+        sys.stdout.flush()
+
+    # def on_chat_model_start(
+    #     self,
+    #     serialized: Dict[str, Any],
+    #     messages: List[List[BaseMessage]],
+    #     **kwargs: Any,
+    # ) -> None:
+    #     sys.stdout.write(f"{messages}\n\n")
+    #     sys.stdout.flush()
+
+
 class MyRag:
     def __init__(self, chat_model, tokenizer, retriever, streaming=True):
-        streamer = None
+        callbacks = None
         if streaming:
-            streamer = TextStreamer(tokenizer)
-        pipe = pipeline(
-            "text-generation",
-            model=chat_model,
-            tokenizer=tokenizer,
-            max_length=4096,
-            truncation=True,
-            repetition_penalty=1.2,
-            do_sample=True,
+            callbacks = [MyStreamingStdOutCallbackHandler()]
+        self.local_llm = ChatOpenAI(
+            model_name="llama-3-chinese-8b-instruct-v3-f16",
+            openai_api_key="your-api-key",
+            openai_api_base="http://localhost:11434/v1/",
             temperature=0.6,
-            top_p=0.95,
-            streamer=streamer,
-            return_full_text=False,
+            streaming=streaming,
+            callbacks=callbacks,
         )
-        self.local_llm = HuggingFacePipeline(pipeline=pipe)
 
         message = [
             {"role": "system",

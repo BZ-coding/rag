@@ -15,7 +15,6 @@ from utils.rag import MyRag as Rag
 EMBEDDING_MODEL_PATH = "/mnt/nfs/zsd_server/models/huggingface/embedding_models/BAAI/bge-large-zh-v1.5/"
 TEXT_EMBEDDING_PAIRS_PATH = 'text_embedding_pairs_BAAI.pkl'
 RERANKER_MODEL_PATH = "/mnt/nfs/zsd_server/models/huggingface/reranker_models/BAAI/bge-reranker-large/"
-# CHAT_MODEL_PATH = "/mnt/nfs/zsd_server/models/huggingface/chinese-alpaca-2-7b/"
 CHAT_MODEL_PATH = "/mnt/nfs/zsd_server/models/huggingface/llama-3-chinese-8b-instruct-v3/"
 STREAMING = True
 
@@ -41,12 +40,13 @@ if __name__ == '__main__':
                                                     text_embedding_pairs_path=TEXT_EMBEDDING_PAIRS_PATH)
     vectorstore = FaissVectorStore(text_embedding_pairs=text_embedding_pairs, embedding_model=embedding_model)
 
-    chat_model = AutoModelForCausalLM.from_pretrained(
-        CHAT_MODEL_PATH,
-        # load_in_8bit=True,
-        device_map='auto',
-        torch_dtype=torch.float16,  # 推理时用fp16精度更高，训练时要用bf16不容易精度溢出
-    )
+    # chat_model = AutoModelForCausalLM.from_pretrained(
+    #     CHAT_MODEL_PATH,
+    #     # load_in_8bit=True,
+    #     device_map='auto',
+    #     torch_dtype=torch.float16,  # 推理时用fp16精度更高，训练时要用bf16不容易精度溢出
+    # )
+    chat_model = None
     tokenizer = AutoTokenizer.from_pretrained(CHAT_MODEL_PATH)
 
     query = "持有管制刀具怎么判？"
