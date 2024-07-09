@@ -8,6 +8,7 @@ authors = [
 ]
 dependencies = [
     "langchain_community",
+    "langchain_openai",
     "transformers",
     "FlagEmbedding",
     "torch",
