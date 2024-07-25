@@ -1,6 +1,6 @@
 from time import sleep
 
-from chatbot import ChatBot
+from .chatbot import ChatBot
 
 # DEFAULT_SYSTEM_PROMPT = """你是一个非常有效的query改写员，你要先对query进行意图识别，然后针对最有可能的意图，进行query改写。请注意query可能的省略及笔误等情况。
 # 你的所改写的query将会被传输给rag文档检索或ai agent工具链。

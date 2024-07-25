@@ -1,4 +1,5 @@
 from time import sleep
+from typing import Union, List, Dict
 
 from openai import OpenAI, NOT_GIVEN
 
@@ -15,7 +16,9 @@ class ChatBot:
             api_key='ollama',  # required but ignored
         )
 
-    def _run_conversation(self, messages: list, temperature, stream, stop):
+    def _run_conversation(self, messages: Union[List[Dict[str, str]], str], temperature, stream, stop):
+        if isinstance(messages, str):
+            messages = [{"role": "user", "content": messages}]
         response = self.client.chat.completions.create(
             messages=messages,
             temperature=temperature,
@@ -25,18 +28,18 @@ class ChatBot:
         )
         return response
 
-    def _chat(self, messages: list, temperature, stop):
+    def _chat(self, messages: Union[List[Dict[str, str]], str], temperature, stop):
         response = self._run_conversation(messages=messages, temperature=temperature, stream=False, stop=stop)
         return response.choices[0].message.content
 
-    def _stream_chat(self, messages: list, temperature, stop):
+    def _stream_chat(self, messages: Union[List[Dict[str, str]], str], temperature, stop):
         response = self._run_conversation(messages=messages, temperature=temperature, stream=True, stop=stop)
         for token in response:
             if token.choices[0].finish_reason is not None:
                 continue
             yield token.choices[0].delta.content
 
-    def chat(self, messages: list, temperature=0.6, stop=NOT_GIVEN, stream=False):
+    def chat(self, messages: Union[List[Dict[str, str]], str], temperature=0.6, stop=NOT_GIVEN, stream=False):
         if not stream:
             return self._chat(messages=messages, temperature=temperature, stop=stop)
         else:
@@ -50,6 +53,7 @@ if __name__ == '__main__':
 
     print("\n\n\n")
 
+    message = "hello."
     for token in chatbot.chat(messages=message, stream=True):
         print(token, end='', flush=True)
         sleep(0.1)

@@ -4,6 +4,7 @@ from typing import Any, Dict, List
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.messages import BaseMessage
 from langchain_core.outputs import LLMResult
+from langchain_core.runnables import RunnableLambda, RunnableBranch
 from langchain_huggingface.llms import HuggingFacePipeline
 from langchain.schema.runnable import RunnablePassthrough
 from langchain.schema.output_parser import StrOutputParser
@@ -14,6 +15,8 @@ from langchain.chains import LLMChain
 from langchain.chains import SequentialChain
 from langchain.chains import SimpleSequentialChain
 from transformers import pipeline, TextStreamer
+
+from utils.rewriter import ReWriter
 
 
 class Rag:
@@ -69,7 +72,7 @@ class MyStreamingStdOutCallbackHandler(StreamingStdOutCallbackHandler):
 
 
 class MyRag:
-    def __init__(self, chat_model, tokenizer, retriever, streaming=True):
+    def __init__(self, tokenizer, retriever, rewriter: ReWriter = None, streaming=True):
         callbacks = None
         if streaming:
             callbacks = [MyStreamingStdOutCallbackHandler()]
@@ -82,6 +85,13 @@ class MyRag:
             callbacks=callbacks,
         )
 
+        def rewrite_func(query):
+            if not rewriter:
+                return query
+            new_query = rewriter.rewrite(query)
+            print(f"query: {query} --> {new_query}")
+            return new_query
+
         message = [
             {"role": "system",
              "content": "你是一个分析师。请从本文中提取与'{question}'相关的关键事实，不相关的可以舍弃。不要包括意见。给每个事实一个数字，并保持简短的句子。"},
@@ -92,8 +102,10 @@ class MyRag:
             input_variables=["context", "question"],
             template=template,
         )
+
         fact_extraction_chain = (
-                {"context": retriever, "question": RunnablePassthrough()}
+                {"question": RunnablePassthrough() | RunnableLambda(rewrite_func)}
+                | {"context": retriever}
                 | fact_template
                 | self.local_llm
                 | StrOutputParser()

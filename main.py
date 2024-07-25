@@ -6,7 +6,9 @@ docker exec -it gpu_env bash
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
+from utils.chatbot import ChatBot
 from utils.embeddings import get_embedding_model, get_text_embedding_pairs
+from utils.rewriter import ReWriter
 from utils.vectorstores import FaissVectorStore
 from utils.rerankers import Reranker
 # from utils.rag import Rag
@@ -19,14 +21,14 @@ CHAT_MODEL_PATH = "/mnt/nfs/zsd_server/models/huggingface/llama-3-chinese-8b-ins
 STREAMING = True
 
 
-def answer(vectorstore, chat_model, tokenizer, query, ranker_model_path=None, streaming=True):
+def answer(vectorstore, chat_model, tokenizer, query, ranker_model_path=None, rewriter=None, streaming=True):
     if ranker_model_path:
         retriever = vectorstore.get_retriever(search_kwargs={"k": 20})
         reranker = Reranker(ranker_model_path=RERANKER_MODEL_PATH, retriever=retriever, topn=3)
         retriever = reranker.as_retriever()
     else:
         retriever = vectorstore.get_retriever(search_kwargs={"k": 3})
-    rag = Rag(chat_model=chat_model, tokenizer=tokenizer, retriever=retriever, streaming=streaming)
+    rag = Rag(tokenizer=tokenizer, retriever=retriever, rewriter=rewriter, streaming=streaming)
     return rag.answer(query=query)
 
 
@@ -48,15 +50,17 @@ if __name__ == '__main__':
     # )
     chat_model = None
     tokenizer = AutoTokenizer.from_pretrained(CHAT_MODEL_PATH)
+    chatbot = ChatBot()
+    rewriter = ReWriter(chatbot=chatbot)
 
     query = "持有管制刀具怎么判？"
-    result = answer(vectorstore=vectorstore, chat_model=chat_model, tokenizer=tokenizer, query=query,
-                    streaming=STREAMING)
-    if not STREAMING:
-        print(result)
+    # result = answer(vectorstore=vectorstore, chat_model=chat_model, tokenizer=tokenizer, query=query,
+    #                 rewriter=rewriter, streaming=STREAMING)
+    # if not STREAMING:
+    #     print(result)
 
-    print("\n\n\n")
+    # print("\n\n\n")
     result = answer(vectorstore=vectorstore, chat_model=chat_model, tokenizer=tokenizer, query=query,
-                    ranker_model_path=RERANKER_MODEL_PATH, streaming=STREAMING)
+                    ranker_model_path=RERANKER_MODEL_PATH, rewriter=rewriter, streaming=STREAMING)
     if not STREAMING:
         print(result)
